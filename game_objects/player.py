@@ -1,28 +1,40 @@
 import pygame
-from game_objects.circleshape import CircleShape
-from constants import PLAYER_RADIUS, LINE_WIDTH, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_RADIUS, PLAYER_SHOOT_SPEED, PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_BOMB_COOLDOWN_SECONDS, BOMB_RADIUS, BOMB_EXPLOSION_RADIUS
+from game_objects.entity import Entity
+from constants import LINE_WIDTH, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_RADIUS, PLAYER_SHOOT_SPEED, \
+    PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_BOMB_COOLDOWN_SECONDS, BOMB_RADIUS, BOMB_EXPLOSION_RADIUS, PLAYER_SIZE
 from game_objects.shot import Shot
 from game_objects.bomb import Bomb
 
-class Player(CircleShape):
+class Player(Entity):
     def __init__(self, x, y):
-        super().__init__(x, y, PLAYER_RADIUS)
+        super().__init__(x, y)
+
+        self.image = pygame.Surface((PLAYER_SIZE * 3, PLAYER_SIZE * 3), pygame.SRCALPHA)
+        self.rect = self.image.get_rect(center=self.position)
+        self.mask = pygame.mask.from_surface(self.image)
+
         self.rotation = 0
         self.shot_cooldown = 0
         self.bomb_cooldown = 0
     
     def triangle(self):
+        canvas_center = pygame.Vector2(self.image.get_width() / 2, self.image.get_height() / 2)
         #Create triangle shape for player
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-        a = self.position + forward * self.radius
-        b = self.position - forward * self.radius - right
-        c = self.position - forward * self.radius + right
+        right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * PLAYER_SIZE / 1.5
+        a = canvas_center + forward * PLAYER_SIZE
+        b = canvas_center - forward * PLAYER_SIZE - right
+        c = canvas_center - forward * PLAYER_SIZE + right
         return [a, b, c]
     
     def draw(self, screen):
-        pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
-    
+        #Update player image and set mask again
+        self.image.fill((0, 0, 0, 0))
+        pygame.draw.polygon(self.image, "white", self.triangle(), LINE_WIDTH)
+        self.mask = pygame.mask.from_surface(self.image)
+        #Copy to screen
+        screen.blit(self.image, self.rect)
+
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
 

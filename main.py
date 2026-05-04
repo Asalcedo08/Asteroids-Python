@@ -52,14 +52,14 @@ def main():
         updatable.update(dt)
 
         #Check for player collision
-        if pygame.sprite.spritecollide(player, asteroids, True, pygame.sprite.collide_circle):
+        if pygame.sprite.spritecollide(player, asteroids, True, pygame.sprite.collide_mask):
             # End game if player collides
             log_event("player_hit")
             print("Game over!")
             sys.exit()
 
         #Check for shots hitting asteroids
-        shot_hits = pygame.sprite.groupcollide(shots, asteroids, True, False, pygame.sprite.collide_circle)
+        shot_hits = pygame.sprite.groupcollide(shots, asteroids, True, False, pygame.sprite.collide_mask)
         # Split asteroid if shot collides
         for shot, hit_asteroids in shot_hits.items():
             for asteroid in hit_asteroids:
@@ -67,7 +67,7 @@ def main():
                 asteroid.split()
 
         # Check for bombs hitting asteroids
-        bomb_hits = pygame.sprite.groupcollide(bombs, asteroids, True, True, pygame.sprite.collide_circle)
+        bomb_hits = pygame.sprite.groupcollide(bombs, asteroids, True, True, pygame.sprite.collide_mask)
         # Bomb asteroid if bomb collides
         for bomb, hit_asteroids in bomb_hits.items():
             for asteroid in hit_asteroids:
