@@ -1,7 +1,26 @@
 # Asteroids-Python
-Game created to learn OOP fundamentals in python from boot.dev
+Game created to learn OOP fundamentals in python started from boot.dev
 
-Extending the Project:
+# Features
+
+Asteroids:
+- Fly around the screen
+- Collision with bomb destroys fully
+- Collision with bullet or bomb explosion causes split
+- Game over on player collision
+
+Player:
+- Shoots asteroids using bombs and bullets
+
+Keybinds: 
+- W: Move forward
+- S: Move backward
+- A: Rotate left
+- D: Rotate right
+- Space: Shoot bullet (0.3 second cooldown)
+- L-Shift: Shoot bomb (3 second cooldown)
+
+# Extending the Project:
 
 - Add a scoring system
 - Implement multiple lives and respawning
@@ -14,4 +33,4 @@ Extending the Project:
 - Make the ship have a triangular hit box instead of a circular one
 - Add a shield power-up
 - Add a speed power-up
-- Add bombs that can be dropped
+- Add animation for bomb explosion
