@@ -1,9 +1,10 @@
 import pygame
-from circleshape import CircleShape
+from game_objects.circleshape import CircleShape
 from constants import LINE_WIDTH
-from logger import log_event
+from debug.logger import log_event
 
 class Bomb(CircleShape):
+    #Nested class for bomb explosion objects
     class Explosion(CircleShape):
         def __init__(self, x, y, radius):
             super().__init__(x, y, radius)
@@ -20,7 +21,10 @@ class Bomb(CircleShape):
         self.position += self.velocity * dt
     
     def explode(self, asteroids):
+        #Create the explosion
         explosion = self.Explosion(self.position[0], self.position[1], self.explosion_radius)
+        
+        #Check if each asteroid is affected by explosion and split
         for asteroid in asteroids:
             if explosion.collides_with(asteroid):
                 log_event("asteroid_hit_with_explosion")

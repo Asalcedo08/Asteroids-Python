@@ -1,9 +1,10 @@
 import pygame
 import random
-from asteroid import Asteroid
+from game_objects.asteroid import Asteroid
 from constants import *
 
 class AsteroidField(pygame.sprite.Sprite):
+    #Sets screen edges
     edges = [
         [
             pygame.Vector2(1, 0),
@@ -36,8 +37,10 @@ class AsteroidField(pygame.sprite.Sprite):
         asteroid.velocity = velocity
 
     def update(self, dt):
+        #Update timer and spawn if time is greater than set spawn rate
         self.spawn_timer += dt
         if self.spawn_timer > ASTEROID_SPAWN_RATE_SECONDS:
+            #reset timer
             self.spawn_timer = 0
 
             # spawn a new asteroid at a random edge
