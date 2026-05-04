@@ -72,7 +72,7 @@ def main():
         for bomb, hit_asteroids in bomb_hits.items():
             for asteroid in hit_asteroids:
                 log_event("asteroid_bombed")
-                bomb.wexplode(asteroids)
+                bomb.explode(asteroids)
 
         #Rendering
         screen.fill("black")
