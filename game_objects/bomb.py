@@ -18,15 +18,15 @@ class Bomb(CircleShape):
     
         
     def update(self, dt):
+        self.rect.center = self.position
         self.position += self.velocity * dt
     
     def explode(self, asteroids):
         #Create the explosion
         explosion = self.Explosion(self.position[0], self.position[1], self.explosion_radius)
-        
+        hit_asteroids = pygame.sprite.spritecollide(explosion, asteroids, False, pygame.sprite.collide_circle)
         #Check if each asteroid is affected by explosion and split
-        for asteroid in asteroids:
-            if explosion.collides_with(asteroid):
-                log_event("asteroid_hit_with_explosion")
-                asteroid.split()
+        for hit_asteroid in hit_asteroids:
+            log_event("asteroid_hit_with_explosion")
+            hit_asteroid.split()
 

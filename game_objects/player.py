@@ -54,6 +54,9 @@ class Player(CircleShape):
         #Add vector to update player position
         self.position += rotated_with_speed_vector
 
+        #Move rect attribute
+        self.rect.center = self.position
+
     def shoot(self):
         #Check if shot timer is ready
         if self.shot_cooldown <= 0:
