@@ -7,7 +7,7 @@ class Shot(Entity):
         super().__init__(x, y)
         self.radius = radius
         self.image = pygame.Surface((self.radius * 2, self.radius * 2), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, "white", (self.radius, self.radius), self.radius, LINE_WIDTH)
+        pygame.draw.circle(self.image, "yellow", (self.radius, self.radius), self.radius, LINE_WIDTH)
         self.rect = self.image.get_rect(center=self.position)
         self.mask = pygame.mask.from_surface(self.image)
 

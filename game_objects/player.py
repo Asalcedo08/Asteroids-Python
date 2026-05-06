@@ -14,6 +14,8 @@ class Player(Entity):
         self.rect = self.image.get_rect(center=self.position)
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.nose = None
+
         self.rotation = 0
         self.shot_cooldown = 0
         self.bomb_cooldown = PLAYER_BOMB_COOLDOWN_SECONDS
@@ -32,6 +34,7 @@ class Player(Entity):
         #Create triangle shape for player
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * PLAYER_SIZE / 1.5
+        self.nose = self.position + forward * PLAYER_SIZE
         a = canvas_center + forward * PLAYER_SIZE
         b = canvas_center - forward * PLAYER_SIZE - right
         c = canvas_center - forward * PLAYER_SIZE + right
@@ -42,7 +45,7 @@ class Player(Entity):
         self.rect.center = (self.position.x, self.position.y)
         #Update player image and set mask again
         self.image.fill((0, 0, 0, 0))
-        pygame.draw.polygon(self.image, "white", self.triangle(), LINE_WIDTH)
+        pygame.draw.polygon(self.image, "green", self.triangle(), LINE_WIDTH)
         self.mask = pygame.mask.from_surface(self.image)
         #Copy to screen
         screen.blit(self.image, self.rect)
@@ -83,16 +86,6 @@ class Player(Entity):
         acceleration = forward * PLAYER_ACCELERATION * dt
         self.velocity += acceleration
 
-
-
-
-        #Get vector and add rotation + speed
-        # unit_vector = pygame.Vector2(0, 1)
-        # rotated_vector = unit_vector.rotate(self.rotation)
-        # rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
-        # #Add vector to update player position
-        # self.position += rotated_with_speed_vector
-
         #Move rect attribute
         self.rect.center = self.position
 
@@ -114,7 +107,7 @@ class Player(Entity):
             #Reset timer
             self.shot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
             #Create shot and set velocity
-            shot = Shot(self.position[0], self.position[1], SHOT_RADIUS)
+            shot = Shot(self.nose.x, self.nose.y, SHOT_RADIUS)
             vector = pygame.Vector2(0, 1)
             vector = vector.rotate(self.rotation)
             vector *= PLAYER_SHOOT_SPEED
@@ -125,7 +118,7 @@ class Player(Entity):
         if self.bombs > 0:
             self.bombs -= 1
             #Create bomb and set velocity
-            bomb = Bomb(self.position[0], self.position[1], BOMB_RADIUS, BOMB_EXPLOSION_RADIUS)
+            bomb = Bomb(self.nose.x, self.nose.y, BOMB_RADIUS, BOMB_EXPLOSION_RADIUS)
             vector = pygame.Vector2(0, 1)
             vector = vector.rotate(self.rotation)
             vector *= PLAYER_SHOOT_SPEED
