@@ -6,7 +6,7 @@ from game_objects.shot import Shot
 from game_objects.bomb import Bomb
 
 class Player(Entity):
-    def __init__(self, x, y):
+    def __init__(self, x, y, game_input):
         super().__init__(x, y)
 
         self.image = pygame.Surface((PLAYER_SIZE * 3, PLAYER_SIZE * 3), pygame.SRCALPHA)
@@ -15,7 +15,14 @@ class Player(Entity):
 
         self.rotation = 0
         self.shot_cooldown = 0
-        self.bomb_cooldown = 0
+        self.bomb_cooldown = PLAYER_BOMB_COOLDOWN_SECONDS
+
+        self.max_lives = 3
+        self.lives = 3
+        self.max_bombs = 3
+        self.bombs = 1
+
+        self.game_input = game_input
     
     def triangle(self):
         canvas_center = pygame.Vector2(self.image.get_width() / 2, self.image.get_height() / 2)
@@ -42,21 +49,13 @@ class Player(Entity):
         #Update player timers and get keys pressed
         self.shot_cooldown -= dt
         self.bomb_cooldown -= dt
-        keys = pygame.key.get_pressed()
 
-        #Checks for input and applies the effect
-        if keys[pygame.K_a]:
-            self.rotate(-dt)
-        if keys[pygame.K_d]:
-            self.rotate(dt)
-        if keys[pygame.K_w]:
-            self.move(dt)
-        if keys[pygame.K_s]:
-            self.move(-dt)
-        if keys[pygame.K_SPACE]:
-            self.shoot()
-        if keys[pygame.K_LSHIFT]:
-            self.bomb()
+        #Adds bomb and resets timer if ready and less than 3 bombs
+        if self.bomb_cooldown <= 0 and self.bombs < self.max_bombs:
+            self.bombs += 1
+            self.bomb_cooldown = PLAYER_BOMB_COOLDOWN_SECONDS
+
+        self.game_input.input_action(self, dt)
 
     def move(self, dt):
         #Get vector and add rotation + speed
@@ -82,10 +81,9 @@ class Player(Entity):
             shot.velocity = vector
 
     def bomb(self):
-        #Check if bomb timer is ready
-        if self.bomb_cooldown <= 0:
-            #Reset timer
-            self.bomb_cooldown = PLAYER_BOMB_COOLDOWN_SECONDS
+        #Check if bombs are available and creates
+        if self.bombs > 0:
+            self.bombs -= 1
             #Create bomb and set velocity
             bomb = Bomb(self.position[0], self.position[1], BOMB_RADIUS, BOMB_EXPLOSION_RADIUS)
             vector = pygame.Vector2(0, 1)

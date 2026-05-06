@@ -39,4 +39,5 @@ class Bomb(Entity):
         for hit_asteroid in hit_asteroids:
             log_event("asteroid_hit_with_explosion")
             hit_asteroid.split()
+        return len(hit_asteroids)
 
