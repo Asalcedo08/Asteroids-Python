@@ -1,7 +1,8 @@
 import pygame
 from game_objects.entity import Entity
 from constants import LINE_WIDTH, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_RADIUS, PLAYER_SHOOT_SPEED, \
-    PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_BOMB_COOLDOWN_SECONDS, BOMB_RADIUS, BOMB_EXPLOSION_RADIUS, PLAYER_SIZE
+    PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_BOMB_COOLDOWN_SECONDS, BOMB_RADIUS, BOMB_EXPLOSION_RADIUS, PLAYER_SIZE, \
+    SCREEN_WIDTH, SCREEN_HEIGHT, SCOREBOARD_HEIGHT
 from game_objects.shot import Shot
 from game_objects.bomb import Bomb
 
@@ -46,9 +47,10 @@ class Player(Entity):
         self.rotation += PLAYER_TURN_SPEED * dt
 
     def update(self, dt):
-        #Update player timers and get keys pressed
+        #Update player timers
         self.shot_cooldown -= dt
-        self.bomb_cooldown -= dt
+        if self.bombs != self.max_bombs:
+            self.bomb_cooldown -= dt
 
         #Adds bomb and resets timer if ready and less than 3 bombs
         if self.bomb_cooldown <= 0 and self.bombs < self.max_bombs:
@@ -67,6 +69,18 @@ class Player(Entity):
 
         #Move rect attribute
         self.rect.center = self.position
+
+        if self.position[0] < -PLAYER_SIZE:
+            self.position[0] = SCREEN_WIDTH + PLAYER_SIZE
+
+        elif self.position[0] > SCREEN_WIDTH + PLAYER_SIZE:
+            self.position[0] = -PLAYER_SIZE
+
+        if self.position[1] < -PLAYER_SIZE:
+            self.position[1] = SCREEN_HEIGHT - SCOREBOARD_HEIGHT + PLAYER_SIZE
+
+        elif self.position[1] > SCREEN_HEIGHT - SCOREBOARD_HEIGHT + PLAYER_SIZE:
+            self.position[1] = -PLAYER_SIZE
 
     def shoot(self):
         #Check if shot timer is ready

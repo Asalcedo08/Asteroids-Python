@@ -1,5 +1,6 @@
 from game_objects.entity import Entity
-from constants import LINE_WIDTH, ASTEROID_MIN_RADIUS
+from constants import LINE_WIDTH, ASTEROID_MIN_RADIUS, SCREEN_WIDTH, SCREEN_HEIGHT, SCOREBOARD_HEIGHT, \
+    ASTEROID_MAX_RADIUS
 from debug.logger import log_event
 import pygame
 import random
@@ -19,6 +20,19 @@ class Asteroid(Entity):
     def update(self, dt):
         self.rect.center = self.position
         self.position += self.velocity * dt
+
+        #Asteroid position wrapping if it goes past edge
+        if self.position[0] < -ASTEROID_MAX_RADIUS:
+            self.position[0] = SCREEN_WIDTH + ASTEROID_MAX_RADIUS
+
+        elif self.position[0] > SCREEN_WIDTH + ASTEROID_MAX_RADIUS:
+            self.position[0] = -ASTEROID_MAX_RADIUS
+
+        if self.position[1] < -ASTEROID_MAX_RADIUS:
+            self.position[1] = SCREEN_HEIGHT - SCOREBOARD_HEIGHT +ASTEROID_MAX_RADIUS
+
+        elif self.position[1] > SCREEN_HEIGHT - SCOREBOARD_HEIGHT + ASTEROID_MAX_RADIUS:
+            self.position[1] = -ASTEROID_MAX_RADIUS
 
     #Astroid splitting
     def split(self):
