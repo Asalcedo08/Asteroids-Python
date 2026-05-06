@@ -18,6 +18,7 @@ Asteroids:
 Player:
 - Shoots asteroids using bombs and bullets
 - Wraps around the screen if it goes ove the edge
+- Uses acceleration and friction for "drifting" movement
 
 Keybinds: 
 - W: Move forward
@@ -31,7 +32,6 @@ Keybinds:
 
 - Change respawning after losing life
 - Add an explosion effect for the asteroids
-- Add acceleration to the player movement
 - Add a background image
 - Create different weapon types
 - Make the asteroids lumpy instead of perfectly round

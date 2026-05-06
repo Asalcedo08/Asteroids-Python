@@ -1,8 +1,8 @@
 import pygame
 from game_objects.entity import Entity
-from constants import LINE_WIDTH, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_RADIUS, PLAYER_SHOOT_SPEED, \
+from constants import LINE_WIDTH, PLAYER_TURN_SPEED, PLAYER_MAX_SPEED, SHOT_RADIUS, PLAYER_SHOOT_SPEED, \
     PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_BOMB_COOLDOWN_SECONDS, BOMB_RADIUS, BOMB_EXPLOSION_RADIUS, PLAYER_SIZE, \
-    SCREEN_WIDTH, SCREEN_HEIGHT, SCOREBOARD_HEIGHT
+    SCREEN_WIDTH, SCREEN_HEIGHT, SCOREBOARD_HEIGHT, PLAYER_ACCELERATION, FRICTION
 from game_objects.shot import Shot
 from game_objects.bomb import Bomb
 
@@ -23,6 +23,8 @@ class Player(Entity):
         self.max_bombs = 3
         self.bombs = 1
 
+        self.velocity = pygame.Vector2(0, 0)
+
         self.game_input = game_input
     
     def triangle(self):
@@ -36,6 +38,8 @@ class Player(Entity):
         return [a, b, c]
     
     def draw(self, screen):
+        #Update rect to match current position
+        self.rect.center = (self.position.x, self.position.y)
         #Update player image and set mask again
         self.image.fill((0, 0, 0, 0))
         pygame.draw.polygon(self.image, "white", self.triangle(), LINE_WIDTH)
@@ -59,13 +63,35 @@ class Player(Entity):
 
         self.game_input.input_action(self, dt)
 
+        #Slow down using friction
+        self.velocity *= FRICTION
+
+        #Cap speed and update position
+        if self.velocity.length() > PLAYER_MAX_SPEED:
+            self.velocity.scale_to_length(PLAYER_MAX_SPEED)
+
+        self.position += self.velocity * dt
+
+
+
+
     def move(self, dt):
+        # Create rotated vector
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+
+        # Calculate and add acceleration to velocity
+        acceleration = forward * PLAYER_ACCELERATION * dt
+        self.velocity += acceleration
+
+
+
+
         #Get vector and add rotation + speed
-        unit_vector = pygame.Vector2(0, 1)
-        rotated_vector = unit_vector.rotate(self.rotation)
-        rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
-        #Add vector to update player position
-        self.position += rotated_with_speed_vector
+        # unit_vector = pygame.Vector2(0, 1)
+        # rotated_vector = unit_vector.rotate(self.rotation)
+        # rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
+        # #Add vector to update player position
+        # self.position += rotated_with_speed_vector
 
         #Move rect attribute
         self.rect.center = self.position
